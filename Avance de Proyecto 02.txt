@@ -1,0 +1,44 @@
+INICIO
+    // Definir Variable a usar
+    lista_notas ← 0
+    N ← 0
+    suma ← 0
+    promedio ← 0
+    nota ← 0
+    // Pedir cantidad de notas que desea procesar
+    IMPRIMIR "¿Cuántas notas desea ingresar? (N > 0)"
+    LEER N
+    // La nota debe ser mayor a 0
+    MIENTRAS N <= 0 HACER
+        IMPRIMIR "La cantidad de notas debe ser mayor que 0. Intente de nuevo."
+        LEER N
+    FIN_MIENTRAS
+    // Registrar notas, y almacenarlas en lista de Notas
+    PARA i ← 1 HASTA N HACER
+        IMPRIMIR "Ingrese la nota ", i, ": "
+        nota ← RegistrarNota()
+        lista_notas.Agregar(nota)
+    FIN_PARA
+    // Calcular el promedio de las notas
+    suma ← 0
+FUNCION PromedioNotas(lista_notas) : REAL
+//PRE deben existir notas almacenadas en lista de notas
+// POST promedio
+     PARA i ← 1 HASTA CantidadN (lista_notas) HACER
+        suma ← suma + lista_notas[i]
+    FIN_PARA
+    promedio ← suma / N
+    IMPRIMIR "El promedio de las ", N, " notas es: ", promedio
+FIN_ALGORITMO
+// Función para ingresar una nota válida (mayor a 0 y hasta 100)
+FUNCION RegistrarNota() :
+// PRE las notas deben ser mayores a 0, y no deben ser mayores a 100
+// POST notas
+    LEER nota
+    MIENTRAS nota <= 0 o nota > 100 HACER
+        IMPRIMIR "La nota no cumple con los requisitos (mayor a 0 y hasta 100). Intente de nuevo: "
+        LEER nota
+    FIN_MIENTRAS
+// imprimir la nota
+    RETORNAR nota
+FIN_FUNCION
