@@ -21,13 +21,11 @@ def Registro_Curso():
     if nota < 0 or nota > 100:
         print("La nota no está en el rango de 0 a 100.\n")
         return
-
-    # guardar el curso y nota
-    cursos.append(nombre)
-    notas.append(nota)
-    print(f"Curso '{nombre}' con nota {nota} registrado correctamente.\n")
+    else:# guardar el curso y nota
+        cursos.append(nombre)
+        notas.append(nota)
+        print(f"Curso '{nombre}' con nota {nota} registrado correctamente.\n")
     
-
 #Mostrar cursos y notas previamente registrados
 def Mostrar_cursos_notas():
     # si no hay cursos
@@ -159,6 +157,7 @@ while True:
 
 
        
+
 
 
 
