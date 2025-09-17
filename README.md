@@ -69,4 +69,5 @@ Controlan qué acción ejecutar según la opción ingresada, en el menú princip
 1. SI opción == 1 ENTONCES
    1.1 <registrar nuevo curso>
 1.2. SINO SI opción == 2 ENTONCES
-    1.2.1 <mostrar todos los cursos y notas>
+    1.2.1 <mostrar todos los cursos y notas>.
+   Implementacion de funcione de busqueda lineal, y binaria, creandon una nueva variable que almacene los elementos en minusculas para facilitar el cambio de forma descendente, y de forma alfabeticamente. Usando el bucle While y if. Por si no se encontraron elementos en las lista.
