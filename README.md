@@ -70,13 +70,13 @@ Controlan qué acción ejecutar según la opción ingresada, en el menú princip
    1.1 <registrar nuevo curso>
 1.2. SINO SI opción == 2 ENTONCES
     1.2.1 <mostrar todos los cursos y notas>.
-**Codigo en Pyton**
-*Se crearon 2 listas para almacenar la informacion, del estudiante. cursos[] y Notas[]
-**Funcion numero 1 para registrar un nuevo cursos**
-*Def Registro_Curso() : Pedir al usuario el nuevo curso, y nota creamos una variable para almacenar los datos, en el programa
-Usamos If para verificar que el curso no quede vacio. Implementamos otra condicion con Si(IF)
-La nota debe estar en una rango mayor de 0 y menor de 100.
-Usamos la funcion ,append para guardar el curso al final de la lista, mostrara un mensaje de el curso ya refistrado exitosamente.
-* Creamos un menu para mostrar al usuario la funcion
+   Codigo en Pyton
+   Se crearon 2 listas para almacenar la informacion, del estudiante. cursos[] y Notas[]
+   Funcion numero 1 para registrar un nuevo cursos
+   Def Registro_Curso() : Pedir al usuario el nuevo curso, y nota creamos una variable para almacenar los datos, en el programa
+   Usamos If para verificar que el curso no quede vacio. Implementamos otra condicion con Si(IF)
+   La nota debe estar en una rango mayor de 0 y menor de 100.
+   Usamos la funcion ,append para guardar el curso al final de la lista, mostrara un mensaje de el curso ya refistrado exitosamente.
+   Creamos un menu para mostrar al usuario la funcion
 
    Implementacion de funcione de busqueda lineal, y binaria, creandon una nueva variable que almacene los elementos en minusculas para facilitar el cambio de forma descendente, y de forma alfabeticamente. Usando el bucle While y if. Por si no se encontraron elementos en las lista.
