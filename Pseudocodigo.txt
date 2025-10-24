@@ -1,0 +1,361 @@
+# ------------------------- "Gestor Notas Académicas"-------------------------
+
+# Listas globales que almacenan los cursos, sus notas y el historial de cambios realizados en todo el sistema.
+Variables globales:
+    notas ← lista vacía
+    cursos ← lista vacía
+    historial_cambios ← lista vacía  # funciona como pila (LIFO)
+
+#----------------------------------------------------------------------------
+# 1.                 "REGISTRO Y VISUALIZACION DE LAS NOTAS" 
+#----------------------------------------------------------------------------
+
+#                     "1. Funcion: Registro curso"
+
+# Permite registrar un nuevo curso con su nota correspondiente.
+
+
+FUNCION Registro_Curso
+#PRE: el usuario debe ingresar un nombre no vacío y una nota entre 0 y 100
+#POST: agrega curso y nota a las listas; registra evento en historial
+    pedir nombre ← LEER ("Ingrese el nombre del nuevo curso:")
+    SI nombre está vacío:
+        IMPRIMIR "El nombre no debe estar vacío."
+        retornar
+
+    pedir nota_ingresada ← LEER("Ingrese la nota obtenida en ese curso:")
+    SI nota_ingresada está vacía:
+        IMPRIMIR "Cada curso debe tener una nota asignada."
+        retornar
+
+    intentar convertir nota ← float(nota_ingresada)
+    SI falla conversión:
+        IMPRIMIR "La nota debe ser un número."
+        retornar
+
+    SI nota < 0 o nota > 100:
+        IMPRIMIR "La nota no está en el rango de 0 a 100."
+        retornar
+    SINO:
+        agregar nombre a cursos
+        agregar nota a notas
+        (opcional) agregar registro al historial_cambios: "Se registró: {nombre} - Nota: {nota}"
+        IMPRIMIR "Curso '{nombre}' con nota {nota} registrado correctamente."
+        Enter para continuar
+FIN_FUNCION 
+
+#        "2. Opcion Mostrar cursos y notas previamente registrados"
+
+# Muestra todos los cursos y notas registrados.
+
+
+FUNCION Mostrar_cursos_notas
+#PRE: debe haber al menos un curso registrado
+#POST: imprime la lista numerada de cursos con sus notas
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos ni notas para mostrar"
+        retornar
+    IMPRIMIR "Cursos y notas registrados:"
+    para i desde 0 hasta len(cursos)-1:
+        IMPRIMIR "{i+1}. {cursos[i]} - Nota: {notas[i]}"
+    Enter para continuar
+Fin_FUNCION 
+
+#----------------------------------------------------------------------------
+# 2.                "CÁLCULOS Y ESTADÍSTICAS DE LOS DATOS"
+#----------------------------------------------------------------------------
+
+#                      "3. Funcion : calcular promedio"
+
+# Calcula el promedio general de las notas.
+
+FUNCION Calcular_promedio
+#PRE: debe existir al menos una nota
+#POST: muestra el promedio con 2 decimales
+    SI notas está vacío:
+        IMPRIMIR "No hay notas para calcular el promedio."
+        retornar
+    promedio ← sum(notas) / len(notas)
+    IMPRIMIR "El promedio General es: {promedio:.2f}"
+    Enter para continuar
+FIN_FUNCION 
+
+#            "4. Funcion: Contar Cursos Aprobados y Reprobados"
+
+# Cuenta los cursos aprobados y reprobados.
+
+FUNCION Aprobados_Reprobados
+#PRE: debe haber notas registradas
+#POST: muestra la cantidad de aprobados (nota >= 60) y reprobados (< 60)
+    SI notas está vacío:
+        IMPRIMIR "No hay notas registradas."
+        retornar
+    aprobados ← 0
+    reprobados ← 0
+    para cada nota en notas:
+        SI nota >= 60:
+            aprobados ← aprobados + 1
+        SINO:
+            reprobados ← reprobados + 1
+    IMPRIMIR "Cursos aprobados: {aprobados}"
+    IMPRIMIR "Cursos reprobados: {reprobados}"
+    Enter para continuar
+Fin_FUNCION 
+
+#----------------------------------------------------------------------------
+#  3.           "BÚSQUEDA Y ACTUALIZACIÓN DE LAS NOTAS Y CURSOS"
+#----------------------------------------------------------------------------
+
+#                   "5. Funcion: Buscar curso por nombre"
+
+#  Busca un curso por nombre o parte del nombre (búsqueda lineal).
+FUNCION Buscar_curso
+#PRE: deben existir cursos registrados
+#POST: muestra cursos que coincidan parcial o totalmente (búsqueda lineal)
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados."
+        retornar
+    pedir termino ← LEER("Ingrese el nombre (o parte) del curso a buscar:").lower().strip()
+    encontrados ← lista vacía
+    para i, curso en enumerate(cursos):
+        si termino está contenido en curso.lower():
+            agregar (curso, notas[i]) a encontrados
+    SI encontrados no está vacío:
+        IMPRIMIR "Cursos encontrados:"
+        para cada (curso, nota) en encontrados:
+            IMPRIMIR "- {curso} = Nota: {nota}"
+    SINO:
+        IMPRIMIR "No se encontró ningún curso con ese nombre."
+    Enter para continuar
+FIN_FUNCION 
+
+#                "6. Funcion: Actualizar nota de un curso"
+
+# Actualiza la nota de un curso ya existente.
+
+FUNCION Actualizar_Nota_De_Cursos
+#PRE: debe existir al menos un curso; el curso ingresado debe existir
+#POST: actualiza la nota del curso seleccionado y registra el cambio en historial
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados para actualizar su nota."
+        retornar
+    IMPRIMIR lista de cursos
+    pedir Nombre ← LEER("Ingrese el nombre del curso que desea cambiar su nota:").strip()
+    cursos_lower ← [c.lower() for c in cursos]
+    SI Nombre.lower() en cursos_lower:
+        indice ← index de Nombre.lower() en cursos_lower
+        pedir nueva_nota_ingresada ← LEER("Ingrese la nueva nota para {cursos[indice]}:")
+        intentar convertir nueva_nota ← float(nueva_nota_ingresada)
+        SI conversión falla:
+            IMPRIMIR "Por favor, ingrese un número válido para la nota."
+        SI nueva_nota < 0 o nueva_nota > 100:
+            IMPRIMIR "La nota debe estar entre 0 y 100."
+        SINO:
+            nota_anterior ← notas[indice]
+            notas[indice] ← nueva_nota
+            agregar a historial_cambios el texto: "Se actualizó: {curso} - Nota anterior: {nota_anterior} → Nueva nota: {nueva_nota}"
+            IMPRIMIR "Nota actualizada para el curso {curso}."
+    SINO:
+        IMPRIMIR "El curso '{Nombre}' no se encuentra registrado aun en el Sistema."
+    Enter para continuar
+FIN_FUNCION 
+
+
+#                       "7. Funcion: Eliminar un Curso"
+
+# Elimina un curso del sistema.
+
+FUNCION Eliminar_Curso
+#PRE: debe existir al menos un curso
+#POST: elimina curso y nota si el usuario confirma; registra el cambio en historial
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados para eliminar."
+        retornar
+    pedir Eliminar ← input("Ingrese el nombre del curso a eliminar:").strip()
+    cursos_lower ← [c.lower() for c in cursos]
+    SI Eliminar.lower() en cursos_lower:
+        indice ← index de Eliminar.lower() en cursos_lower
+        curso_eliminado ← cursos[indice]
+        nota_eliminada ← notas[indice]
+        pedir confirmacion ← LEER("¿Está seguro que desea eliminar '{curso_eliminado}'? (si/no):").lower().strip()
+        SI confirmacion == "si":
+            eliminar cursos[indice] y notas[indice]
+            agregar a historial_cambios: "Se eliminó: {curso_eliminado} - Nota: {nota_eliminada}"
+            MOSTRAR "Curso eliminado correctamente."
+        SINO:
+            IMPRIMIR "Operación cancelada. El curso no fue eliminado."
+    SINO:
+        IMPRIMIR "El curso '{Eliminar}' no se encuentra registrado."
+FIN_FUNCION 
+
+#----------------------------------------------------------------------------
+#  4.                    "ORDENAMIENTO Y BÚSQUEDA BINARIA"
+#----------------------------------------------------------------------------
+
+#          " 8. Funcion:  Ordenar cursos por nota (Ordenamineto Burbuja)"
+
+# Ordena los cursos según sus notas (mayor a menor) usando el método de burbuja.
+
+FUNCION ordenar_cursos_por_nota
+#PRE: deben existir cursos y notas
+#POST: ordena ambas listas por nota (descendente) y muestra el resultado
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados para ordenar."
+        retornar
+    n ← len(notas)
+    aplicar algoritmo burbuja para ordenar notas de mayor a menor,
+        intercambiando también los elementos correspondientes en cursos
+    IMPRIMIR "Cursos ordenados por nota (descendente):"
+    IMPRIMIR lista ordenada
+Fin_FUNCION 
+
+#     "9. Funcion: Ordenar cursos por nombre. (Ordenamineto de insercion)"
+
+# Ordena los cursos alfabéticamente usando el método de inserción.
+
+FUNCION ordenar_cursos_por_nombre
+#PRE: deben existir cursos y notas
+#POST: ordena alfabeticamente cursos (A-Z) sincronizando notas; muestra el resultado
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados para buscar."
+        retornar
+    aplicar algoritmo de inserción para ordenar cursos por nombre (usar comparación en minúsculas)
+        mover también las notas correspondientes al mantener sincronía
+    IMPRIMIR "Cursos ordenados por nombre:"
+    IMPRIMIR lista ordenada
+    Enter para continuar
+FIN_FUNCION 
+
+
+#             "10. Funcion: Buscar curso por nombre (búsqueda binaria)"
+
+# Busca un curso usando búsqueda binaria (se requiere la lista este ordenada). 
+
+FUNCION buscar_curso_binario
+#PRE: deben existir cursos; la lista debe estar ordenada alfabéticamente (se procede a ordenar internamente)
+#POST: retorna índice del curso encontrado o -1 si no existe; muestra resultado
+    SI cursos está vacío:
+        IMPRIMIR "No hay cursos registrados para buscar."
+        retornar -1
+    ordenar (cursos, notas) por curso (alfabéticamente) y reasignar listas
+    pedir nombre_buscar ← LEER("Ingrese el nombre del curso a buscar:").lower().strip()
+    min ← 0 ; max ← len(cursos) - 1
+    MIENTRAS min ≤ max:
+        medio ← (min + max) // 2
+        curso_medio ← cursos[medio].lower()
+        SI curso_medio == nombre_buscar:
+            IMPRIMIR "Curso encontrado: {cursos[medio]} - Nota: {notas[medio]}"
+            retornar medio
+        SINO SI curso_medio < nombre_buscar:
+            min ← medio + 1
+        SINO:
+            max ← medio - 1
+    IMPRIMIR "Curso no encontrado."
+    retornar -1
+Fin_FUNCION 
+
+#----------------------------------------------------------------------------
+# 5.                "ESTRUCTURAS DE LOS DATOS (PILA/COLA)""
+#----------------------------------------------------------------------------
+
+#         "11. Funcion: Simular una cola de solicitudes de revisión"
+
+# Simula una cola (FIFO) de solicitudes de revisión.
+
+FUNCION simular_cola_revision
+#PRE: debe haber cursos registrados (opcionalmente)
+#POST: simula una cola FIFO procesando solicitudes ingresadas por el usuario
+    SI cursos está vacío: (solo advertencia) mostrar "No hay cursos registrados en el sistema" y retornar
+    cola ← lista vacía
+    IMPRIMIR "Ingrese curso para revisión (escriba 'fin' para terminar):"
+    repetir:
+        leer curso
+        si curso.lower() == "fin": romper
+        agregar curso al final de cola
+    IMPRIMIR "Procesando solicitudes:"
+    mientras cola no esté vacía:
+        curso ← cola.pop(0)  # extrae el primero ingresado
+        mostrar "Revisando: {curso}"
+    Enter para continuar
+Fin_FUNCION simular_cola_revision
+
+#           "12. Funcion : Mostrar historial de cambios (pila)"
+
+#  Muestra el historial de cambios realizados (estructura tipo pila).
+
+FUNCION Historial_de_cambios
+#PRE: puede estar vacío
+#POST: imprime cambios desde el más reciente al más antiguo
+    SI historial_cambios está vacío:
+        IMPRIMIR "No hay cambios registrados."
+        retornar
+    IMPRIMIR "Historial de cambios recientes:"
+    para i, cambio en enumerate(reversed(historial_cambios), inicio=1):
+        IMPRIMIR "{i}. {cambio}"
+    Enter para continuar
+Fin_FUNCION 
+
+#----------------------------------------------------------------------------
+# 6.                 "MENÚ PRINCIPAL DEL GESTOR DE NOTAS"
+#----------------------------------------------------------------------------
+
+INICIO  
+FUNCIÓN mostrar_menu 
+IMPRIMIR "====== GESTOR DE NOTAS 
+ACADÉMICAS ======" 
+IMPRIMIR "1. Registrar Curso" 
+IMPRIMIR "2. Mostrar curso" 
+IMPRIMIR "3. Calcular promedio" 
+IMPRIMIR "4. Contar Cursos Aprobados/Reprobados" 
+IMPRIMIR "5. Buscar Curso por nombre" 
+IMPRIMIR "6. Actualizar nota de un curso" 
+IMPRIMIR "7. Eliminar un curso" 
+IMPRIMIR "8. Ordenar cursos por nota (ordenamiento 
+burbuja)" 
+IMPRIMIR "9. Ordenar cursos por nombre 
+(ordenamiento inserción)" 
+IMPRIMIR "10. Buscar curso por nombre (búsqueda 
+binaria)" 
+IMPRIMIR "11. Simular cola de solicitudes de revisión" 
+IMPRIMIR "12. Mostrar historial de cambios (pila)" 
+IMPRIMIR "13. Salir" 
+FIN FUNCIÓN             
+FIN    
+
+#----------------------------------------------------------------------------
+#  7.                         "PROGRAMA PRINCIPAL"
+#------------------------------------------------------------------------
+Inicio Programa_Principal
+    repetir indefinidamente:
+        mostrar_menu()
+        opcion ← input("Seleccione una opción:")
+        si opcion == "1": Registro_Curso()
+        sino si opcion == "2": Mostrar_cursos_notas()
+        sino si opcion == "3": Calcular_promedio()
+        sino si opcion == "4": Aprobados_Reprobados()
+        sino si opcion == "5": Buscar_curso()
+        sino si opcion == "6": Actualizar_Nota_De_Cursos()
+        sino si opcion == "7": Eliminar_Curso()
+        sino si opcion == "8": ordenar_cursos_por_nota(cursos, notas)
+        sino si opcion == "9": ordenar_cursos_por_nombre(cursos, notas)
+        sino si opcion == "10": buscar_curso_binario(cursos, notas)
+        sino si opcion == "11": simular_cola_revision()
+        sino si opcion == "12": Historial_de_cambios()
+        sino si opcion == "13":
+            mostrar "Gracias por usar el Gestor de Notas Académicas. ¡Hasta pronto!"
+            romper
+        sino:
+            mostrar "Opción inválida. Intente nuevamente."
+Fin 
+
+
+
+
+
+
+
+
+
+
+
+
